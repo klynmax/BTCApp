@@ -1,43 +1,58 @@
 import React, { Fragment } from "react"
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, FlatList } from "react-native";
+// import { FlatList } from "react-native-web";
+import QuotationItem from "./QuotationItem";
 import styles from "./style";
 
-export default function QuotationList(){
+export default function QuotationList(props){
+
+    const daysQuery = props.filterDay;
+
     return(
         <Fragment>
             <View style={styles.filters}>
                 <TouchableOpacity 
                     style={styles.buttonQuery}
-                    onPress={()=>{}}
+                    onPress={() => daysQuery(7)}
                 >
                     <Text style={styles.textButtonQuery}>7D</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.buttonQuery}
-                    onPress={()=>{}}
+                    onPress={() => daysQuery(15)}
                 >
                     <Text style={styles.textButtonQuery}>15D</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.buttonQuery}
-                    onPress={()=>{}}
+                    onPress={() => daysQuery(30)}
                 >
                     <Text style={styles.textButtonQuery}>1M</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.buttonQuery}
-                    onPress={()=>{}}
+                    onPress={() => daysQuery(90)}
                 >
                     <Text style={styles.textButtonQuery}>3M</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.buttonQuery}
-                    onPress={()=>{}}
+                    onPress={() => daysQuery(180)}
                 >
                     <Text style={styles.textButtonQuery}>6M</Text>
                 </TouchableOpacity>
             </View>
-            {/* <ScrollView></ScrollView> */}
+            <ScrollView>
+                <FlatList 
+                    data={props.listTransactions}
+                    renderItem={({item}) => {
+                        return <QuotationItem 
+                                    valor={item.valor} 
+                                    data={item.data}
+                                />
+                    }}
+                />
+            </ScrollView>
         </Fragment>
     )
 }

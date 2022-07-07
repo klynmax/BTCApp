@@ -4,7 +4,6 @@ import { StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native';
 import CurrentPrice from './src/components/CurrentPrice';
 import HitoryGraphic from './src/components/HistoryGraphic';
 import QuotationList from './src/components/QuotationList';
-import QuotationItem from './src/components/QuotationList/QuotationItem';
 
 function addZero(number){
   if(number <= 9){
@@ -20,7 +19,7 @@ function url(qtdDay){
   date.setDate(date.getDate() - listLastDay)
   const startDate = `${date.getFullYear()}-${addZero(date.getMonth()+1)}-${addZero(date.getDate())}`
 
-  return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${startDate}&send=${endDate}`
+  return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${startDate}&end=${endDate}`
 }
 
 async function getListCoins(url){
@@ -30,7 +29,7 @@ async function getListCoins(url){
 
   const queryCoinList = Object.keys(selectListQuotations).map((key) => {
     return {
-      data: key.split(".").reverse().join("/"),
+      data: key.split("-").reverse().join("/"),
       valor: selectListQuotations[key]
     };
   });
@@ -44,11 +43,11 @@ async function getPriceCoinsGraphic(url){
   let returnApiG = await responseG.json();
   let selectListQuotationsG = returnApiG.bpi;
 
-  const queryCoinList = Object.keys(selectListQuotationsG).map((key) => {
-    selectListQuotationsG[key]
+  const queryCoinListG = Object.keys(selectListQuotationsG).map((key) => {
+    return selectListQuotationsG[key]
   });
 
-  let dataG = queryCoinList;
+  let dataG = queryCoinListG;
   return dataG;
 }
 
@@ -56,7 +55,7 @@ export default function App() {
 
   const [coinsList, setCoinsList] = useState([]);
   const [coinsGraphicList, setCoinsGraphicList] = useState([0]);
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(7);
   const [updateData, setUpdateData] = useState(true);
 
   function updateDay(number){
@@ -88,9 +87,8 @@ export default function App() {
         barStyle="ligth-content"
       />
       <CurrentPrice />
-      <HitoryGraphic />
-      <QuotationList />
-      <QuotationItem />
+      <HitoryGraphic infoDataGraphic={coinsGraphicList} />
+      <QuotationList filterDay={updateDay} listTransactions={coinsList} />
     </SafeAreaView>
   );
 }
